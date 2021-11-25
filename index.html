@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Этот документ приходит в виде обычной строки по сети с маршрута '/'  -->
 <html>
 <head>
     <title>Цитаты</title>
@@ -14,6 +15,41 @@
 		}
 	</style>
 </head>
+<script>
+	
+	// При событии load выполнится весть код прописанный функции.
+	// мы подвязываемся на load потому что ДО этого события DOM-элемнтов еще 
+	// не существует, поэтому getElementById, к примеру, не сработает.
+	window.addEventListener('load', function () {
+		
+		// получаем dom-элементы
+		const resultDomElement = window.document.getElementById('result');
+		const requestButtonDomElement = window.document.getElementById('requestButton');
+		
+		// Мы описываем функцию, которая просто сделает запрос в сеть и вернет цитату
+		// тоже самое можно сделать если просто перейти на маршрут '/quotes'
+		function sendRequestForGetQuote () {
+			
+			// Здесь мы просто отправляем запрос на /quotes, 
+			// она вернет нам строку и мы ее выведем сразу же в этом html
+			// fetch - просто делает запрос в сеть
+			
+			fetch('quotes')
+			// нам приходит ответ в виде объекта, в нем вывызваем функцию text()
+			// поскольу мы не знаем насколько ответ большой
+			.then (response => response.text()) 
+			// как только ответ был обработа и переведен в обычную строку, то мы можем ее прочитать
+			.then(quote => {
+				// у этого элемента есть поле textContent - оно является текстовым содержимым элемента
+				resultDomElement.textContent = quote
+			})
+		}
+
+		// Добавляем обработчик. При клике выполнится описанная выше sendRequestForGetQuote
+		requestButtonDomElement.addEventListener('click', sendRequestForGetQuote);
+	})
+	
+</script>
 <body>
 	<div class="block1">
 		<h1>Ниже будут появляться цитаты.</h1>
@@ -21,8 +57,8 @@
 		<br>
 		<br>
 		<br>
-		<button type="button" id="requesr">СГЕНЕРИРОВАТЬ</button>
-		<script src="script.js"></script>
+		<button id="requestButton" type="button">СГЕНЕРИРОВАТЬ</button>
+		<p id="result"></p>
 	</div>
 </body>
 </html>
